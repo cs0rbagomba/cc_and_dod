@@ -2,9 +2,7 @@
 
 rm -rf *.gcda *.gcno a.out *.gcov lcov.info cov
 gcc -fprofile-arcs -ftest-coverage  tmp.c
-
 ./a.out
-
 gcov tmp.c
 cat tmp.c.gcov
 

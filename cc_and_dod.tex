@@ -4,6 +4,8 @@
 \usepackage{fancyvrb}
 \usepackage{color}
 \usepackage{graphicx}
+% \usepackage{wrapfig}
+\usepackage{verbatim}
 
 \usetheme{Darmstadt}
 
@@ -16,12 +18,21 @@
 \include{colordefs}
 \makeatother
 
+
+
 \begin{document}
 
 %----------- slide --------------------------------------------------%
 
 \begin{frame}
-\titlepage
+% \titlepage
+\begin{titlepage}
+\begin{center}
+\includegraphics[height=3.3cm]{qr_cc_and_dod.png}
+\end{center}
+\end{titlepage}
+% \end{center}
+
 \end{frame}
 
 %----------- slide --------------------------------------------------%
@@ -35,24 +46,41 @@
 
 \section{Definitions}
 
-\subsection{Testing}
+% \subsection{Testing}
+\subsection{Legacy code}
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{Testing}
+\begin{frame}{Legacy code, unit test, functional test}
+
+
 
 \begin{block}{Legacy code}
-\small
+% \small
 "Code without tests is bad code. It doesn't matter how well written it is; it doesn't matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behaviour of our code quickly and verifiably. Without them, we really don't know if our code is getting better or worse." \cite{legacy}
 \end{block}
 
+\end{frame}
+
+%----------- slide --------------------------------------------------%
+
+\subsection{Tests}
+
+\begin{frame}{Legacy code, unit test, functional test}
+
+% \subsection{Unit test}
+
+
+
 \begin{block}{Unit Test (UT) - white box testing}
-\small
-"The goal of unit testing is to isolate each part of the program and show that the individual parts are correct. A unit test provides a strict, written contract that the piece of code must satisfy." \cite{ut}
+% \small
+"The goal of unit testing is to isolate each part of the program and show that the individual parts are correct. A unit test provides a strict, written \textcolor{red}{contract} \cite{dbc} that the piece of code must satisfy." \cite{ut}
 \end{block}
 
+% \subsection{Functional test}
+
 \begin{block}{Functional Test (FT) - black box testing}
-\small
+% \small
 "Bases its test cases on the specifications of the software component under test. Functions are tested by feeding them input and examining the output, and internal program structure is rarely considered." \cite{ft}
 \end{block}
 
@@ -60,32 +88,42 @@
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{Testing}
+\subsection{Definition of Done,  Continuous Integration}
 
-\begin{block}{Definition of Done (DoD)}
+\begin{frame}{Definition of Done, Continuous Integration}
+
+\begin{block}{Definition of Done - DoD}
 \small
 \begin{itemize}
-  \item "A checklist of valuable activities required to produce software." \cite{dod}
-  \item "Writing code, coding comments, unit testing, integration testing, release notes, design documents, etc"
+  \item "A checklist of valuable activities required to produce software." \cite{dod} 
+% "Writing code, coding comments, unit testing, integration testing, release notes, design documents, etc"
   \item "Different DoD at various levels: feature, sprint, release."
   \item Each team come up with their own DoD which is reviewed and updated as needed.
-  \item Example: unit tests cover >90% lines of the code
+%   \item Example: unit tests cover > 90\% lines of the code
 \end{itemize}
 \end{block}
 
-\begin{block}{Continuous Integration (CI)}
+% \subsection{Continuous Integration}
+
+\begin{block}{Continuous Integration - CI}
 \small
 "Implements continuous processes of applying quality control - small pieces of effort, applied frequently." \cite{ci}
 
 \begin{itemize}
-  \item Automate the build
-  \item Make the build self-testing
-  \item Everyone can see the results of the latest build
-  \item ...verifies DOD.
+  \item Automate the build.
+  \item Make the build self-testing.
+%   \item Everyone can see the results of the latest build.
+  \item ...verifies the DoD.
 \end{itemize}
 \end{block}
 
 \end{frame}
+
+
+\section{Code coverage}
+
+\subsection{gcov and gprof}
+
 
 %----------- slide --------------------------------------------------%
 
@@ -96,17 +134,20 @@
 "gcov is a tool you can use in conjunction with GCC to test code coverage in your programs." \cite{gcov}
 
 \begin{itemize}
-  \item how often each line of code executes
-  \item which lines of code are actually executed
+  \item How often each line of code executes.
+  \item Which lines of code are actually executed.
 \end{itemize}
 \end{block}
+
+% \subsection{gprof}
 
 \begin{block}{gprof}
 \small
 The GNU profiler. \cite{gprof}
 
 \begin{itemize}
-  \item how much computing time each section of code uses.
+  \item How much computing time each section of code uses.
+  \item Can be used with gcov to locate costy algorithms.
 \end{itemize}
 \end{block}
 
@@ -115,103 +156,112 @@ The GNU profiler. \cite{gprof}
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{how gcov works}
+\subsection{How gcov works}
 
-\begin{block}{how gcov works}
+\begin{frame}{How gcov works}
+
+\begin{block}{gcno}
 \small
 
-\begin{itemize}
-  \item "The .gcno notes file is generated when the source file is compiled with the GCC -ftest-coverage option. It contains information to reconstruct the basic block graphs and assign source line numbers to blocks."
-  \item "The .gcda count data file is generated when a program containing object files built with the GCC -fprofile-arcs option is executed. A separate .gcda file is created for each object file compiled with this option. It contains arc transition counts, value profile counts, and some summary information."
-\end{itemize}
+"The .gcno notes file is generated when the source file is compiled with the GCC \textcolor{red}{-ftest-coverage} option. It contains information to reconstruct the basic block graphs and assign source line numbers to blocks."
+
+\end{block}
+
+\begin{block}{gcda}
+\small
+
+"The .gcda count data file is generated when a program containing object files built with the GCC \textcolor{red}{-fprofile-arcs} option is executed. A separate .gcda file is created for each object file compiled with this option. It contains arc transition counts, value profile counts, and some summary information."
+
 \end{block}
 
 \end{frame}
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{example}
+\subsection{Example}
 
-\begin{block}{sample c code}
-\small
+\begin{frame}[fragile]{Example}
 
-#include <stdio.h>
+\begin{exampleblock}{compile and execute}
+\tiny
+\begin{Verbatim}[numbers=left,firstnumber=1,stepnumber=1]
+gcc -fprofile-arcs -ftest-coverage  tmp.c
+./a.out
+gcov tmp.c
+\end{Verbatim}
+\end{exampleblock}
 
-int main (void)
-{
-  int i, total;
+\begin{columns}[t]
+ 
+\column{1.5in}
 
-  total = 0;
+\begin{exampleblock}{tmp.c}
+\tiny
+\begin{Verbatim}[commandchars=\\\{\},numbers=left,firstnumber=1,stepnumber=1]
+\PY{c+cp}{\PYZsh{}}\PY{c+cp}{include \PYZlt{}stdio.h\PYZgt{}}
 
-  for (i = 0; i < 10; i++)
-    total += i;
+\PY{k+kt}{int} \PY{n+nf}{main} \PY{p}{(}\PY{k+kt}{void}\PY{p}{)}
+\PY{p}{\PYZob{}}
+  \PY{k+kt}{int} \PY{n}{i}\PY{p}{,} \PY{n}{total}\PY{p}{;}
+  \PY{n}{total} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{;}
+  \PY{k}{for} \PY{p}{(}\PY{n}{i} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{;} \PY{n}{i} \PY{o}{\PYZlt{}} \PY{l+m+mi}{10}\PY{p}{;} \PY{n}{i}\PY{o}{+}\PY{o}{+}\PY{p}{)}
+    \PY{n}{total} \PY{o}{+}\PY{o}{=} \PY{n}{i}\PY{p}{;}
 
-  if (total != 45)
-    printf ("Failure\n");
-  else
-    printf ("Success\n");
-  return 0;
-}
+  \PY{k}{if} \PY{p}{(}\PY{n}{total} \PY{o}{!}\PY{o}{=} \PY{l+m+mi}{45}\PY{p}{)}
+    \PY{n}{printf} \PY{p}{(}\PY{l+s}{"}\PY{l+s}{Failure}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{"}\PY{p}{)}\PY{p}{;}
+  \PY{k}{else}
+    \PY{n}{printf} \PY{p}{(}\PY{l+s}{"}\PY{l+s}{Success}\PY{l+s+se}{\PYZbs{}n}\PY{l+s}{"}\PY{p}{)}\PY{p}{;}
+  \PY{k}{return} \PY{l+m+mi}{0}\PY{p}{;}
+\PY{p}{\PYZcb{}}
+\end{Verbatim}
+\end{exampleblock}
 
-$ gcc -fprofile-arcs -ftest-coverage tmp.c
-$ a.out
+\column{2in}
 
-gcov
+\begin{exampleblock}{gcov output}
+\tiny
+\begin{Verbatim}[numbers=left,firstnumber=1,stepnumber=1]
+    -:    1:#include <stdio.h>
+    -:    2:
+    1:    3:int main (void)
+    -:    4:{
+    -:    5:  int i, total;
+    1:    6:  total = 0;
+   11:    7:  for (i = 0; i < 10; i++)
+   10:    8:    total += i;
+    -:    9:
+    1:   10:  if (total != 45)
+#####:   11:    printf ("Failure\n");
+    -:   12:  else
+    1:   13:    printf ("Success\n");
+    1:   14:  return 0;
+    -:   15:}
+\end{Verbatim}
+\end{exampleblock}
 
-$ gcov tmp.c
-File 'tmp.c'
-Lines executed:87.50% of 8
-tmp.c:creating 'tmp.c.gcov'
-
-
-$cat tmp.c.gcov
-
-        -:    0:Source:tmp.c
-        -:    0:Graph:tmp.gcno
-        -:    0:Data:tmp.gcda
-        -:    0:Runs:1
-        -:    0:Programs:1
-        -:    1:#include <stdio.h>
-        -:    2:
-        1:    3:int main (void)
-        -:    4:{
-        -:    5:  int i, total;
-        -:    6:
-        1:    7:  total = 0;
-        -:    8:
-       11:    9:  for (i = 0; i < 10; i++)
-       10:   10:    total += i;
-        -:   11:
-        1:   12:  if (total != 45)
-    #####:   13:    printf ("Failure\n");
-        -:   14:  else
-        1:   15:    printf ("Success\n");
-        1:   16:  return 0;
-        -:   17:}
-\end{block}
+\end{columns}
 
 \end{frame}
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{how gcov works}
+\begin{frame}{Notes and pitfalls}
 
-\begin{block}{note}
+\begin{block}{Note}
 \small
 
 \begin{itemize}
   \item You can combine the results of many runs into one gcda data.
-  \item UTs' and FTs' results can be combined.
+  \item UTs' and FTs' results can be combined too.
 \end{itemize}
 \end{block}
 
-\end{frame}
 
-\begin{block}{note}
+\begin{block}{Watch out}
 \small
 
 \begin{itemize}
-  \item "You should compile your code without optimization." - "optimizer can eliminate some simple code lines by combining them with other lines"
+  \item "You should compile your code without optimization."
   \item "It works best with a programming style that uses only one statement per line."
   \item "Inlineable functions can create unexpected line counts."
 \end{itemize}
@@ -221,93 +271,101 @@ $cat tmp.c.gcov
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{lcov}
+\subsection{lcov}
+
+\begin{frame}[fragile]{lcov}
 
 \begin{block}{lcov}
 \small
 "LCOV is a graphical front-end for GCC's coverage testing tool gcov. It collects gcov data for multiple source files and creates HTML pages containing the source code annotated with coverage information. It also adds overview pages for easy navigation within the file structure." \cite{lcov}
 \end{block}
 
+\begin{exampleblock}{compile and execute}
+\tiny
+\begin{Verbatim}[numbers=left,firstnumber=1,stepnumber=1]
+gcc -fprofile-arcs -ftest-coverage  tmp.c
+./a.out
+lcov --directory . --capture -o lcov.info
+mkdir cov
+genhtml lcov.info  --frames -o ./cov 
+\end{Verbatim}
+\end{exampleblock}
+
 \end{frame}
 
-\begin{block}{asdasd}
-$ gcc -fprofile-arcs -ftest-coverage tmp.c
-$ a.out
-$ lcov --directory . --capture -o lcov.info
-$ mkdir cov
-$ genhtml --frames --legend  --function-coverage  --branch-coverage  --highlight --demangle-cpp  -o ./cov lcov.info
+%----------- slide --------------------------------------------------%
+
+\begin{frame}{lcov picture - overview}
+
+\begin{center}
+\includegraphics[height=3.6cm]{tmp_c_lcov_overview.png}
+\end{center}
+
+\end{frame}
+
+%----------- slide --------------------------------------------------%
+
+\begin{frame}{lcov picture - source browser}
+
+\begin{center}
+\includegraphics[height=5cm]{tmp_c_lcov_source.png}
+\end{center}
+
+\end{frame}
+
+%----------- slide --------------------------------------------------%
+
+\section{Final thoughts}
+
+\subsection{What have we got actually}
+
+\begin{frame}{Final thoughts}
+
+\begin{block}{What have we got actually}
+\small
+\begin{itemize}
+  \item How often each line of code executes.
+  \item What are the untested parts.
+  \item Dead code detection.
+\end{itemize}
+\end{block}
+
+\begin{block}{Line testing != funtionality testing}
+\small
+\begin{itemize}
+  \item UTs report code correctness.
+  \item CC reports...UT correctness?
+\end{itemize}
+It's easy to write meaningless UTs to raise CC...it is not enough by itself.
 \end{block}
 
 \end{frame}
 
 %----------- slide --------------------------------------------------%
 
-\begin{frame}{lcov picture 1}
+\subsection{CC and Dod}
 
-\begin{center}
-\includegraphics[height=5cm]{tmp.c_lcov_overview.png}
-\end{center}
-
-\end{frame}
-
-%----------- slide --------------------------------------------------%
-
-\begin{frame}{lcov picture 2}
-
-\begin{center}
-\includegraphics[height=5cm]{tmp.c_lcov_source.png}
-\end{center}
-
-\end{frame}
-
-%----------- slide --------------------------------------------------%
-
-\begin{frame}{lcov picture 2}
-
-What we actually got:
-
- + how often each line of code executes
- + what lines of code are actually executed
-
-But! Line testing is not funtionality testing
-
- - UTs report code correctness.
- - CC reports...UT correctness?
-
-It's easy to write meaningless UTs to raise CC.
-UTs should cover functionality.
-Without understanding the UTs, all we can get from CC is:
-
- + Discovering untested parts.
- + Detecting dead code.
-
-\end{frame}
-
-%----------- slide --------------------------------------------------%
-
-\begin{frame}{final thoughs}
+\begin{frame}{Final thoughs}
 
 \begin{block}{Testing}
 \small
 
 \begin{itemize}
-  \item FTs can be written by a "test team" which is sometimes the specification team.
+%   \item FTs can be written by a "test team" which is sometimes the specification team.
   \item UTs can be written with Test Driven Development - TDD \cite{tdd}
   \item Test and code writer better be a different person otherwise if the code writer misunderstood the requirement, he tests his false model.
-  \item Review tests, not just code.
-  \item Test code quality should meet the same level as code quality.
-  \item Test plan.
-  \item Test documentation.
+  \item Review tests, not just code. Test code quality should meet the same level as code quality.
+  \item Test plan and test documentation.
 \end{itemize}
 \end{block}
 
-\begin{block}{Code coverage as a part of DoD}
+\begin{block}{CC as a part of the DoD}
 \small
 
 \begin{itemize}
   \item The team agrees on testing principles.
-  \item Code coverage can be >X%
-  \item This rule can be enforced by CI: build fails if CC<X%.
+  \item CC should be \textgreater X\%  
+  \item This rule can be enforced by CI: build fails if CC \textless X\%.
 \end{itemize}
 \end{block}
 
@@ -317,9 +375,8 @@ Without understanding the UTs, all we can get from CC is:
 
 \begin{frame}{Links}
 
-\begin{center}
-\includegraphics[height=5cm]{qr_code.png}
-\end{center}
+% \begin{wrapfigure}{r}{2cm}
+
 
 
 \tiny
@@ -328,6 +385,9 @@ Without understanding the UTs, all we can get from CC is:
 \bibitem{legacy}
 Michael C. Feathers, \emph{Working Effectively with Legacy Code} Prentice Hall, 2004 ISBN 0-13-117705-2
 
+\bibitem{dbc}
+\url{http://en.wikipedia.org/wiki/Design_by_contract}
+
 \bibitem{ut}
 Kolawa, Adam; Huizinga, Dorota (2007). \emph{Automated Defect Prevention: Best Practices in Software Management} Wiley-IEEE Computer Society Press. p. 426. ISBN 0-470-04212-5.
 
@@ -335,24 +395,51 @@ Kolawa, Adam; Huizinga, Dorota (2007). \emph{Automated Defect Prevention: Best P
 Kaner, Falk, Nguyen. \emph{Testing Computer Software} Wiley Computer Publishing, 1999, p. 42. ISBN 0-471-35846-0.
 
 \bibitem{dod}
-http://www.scrumalliance.org/articles/105-what-is-definition-of-done-dod
+\url{http://www.scrumalliance.org/articles/105-what-is-definition-of-done-dod}
 
 \bibitem{ci}
-http://en.wikipedia.org/wiki/Continuous_integration
+\url{http://en.wikipedia.org/wiki/Continuous_integration}
 
 \bibitem{gcov}
-http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+\url{http://gcc.gnu.org/onlinedocs/gcc/Gcov.html}
 
 \bibitem{gprof}
-http://www.cs.utah.edu/dept/old/texinfo/as/gprof_toc.html
+\url{http://www.cs.utah.edu/dept/old/texinfo/as/gprof_toc.html}
 
 \bibitem{lcov}
-http://ltp.sourceforge.net/coverage/lcov.php
+\url{http://ltp.sourceforge.net/coverage/lcov.php}
 
 \bibitem{tdd}
-http://en.wikipedia.org/wiki/Test-driven_development
+\url{http://en.wikipedia.org/wiki/Test-driven_development}
 
 \end{thebibliography}
+\end{frame}
+
+%----------- slide --------------------------------------------------%
+
+%----------- slide --------------------------------------------------%
+
+\begin{frame}{Thank you for your attention!}
+
+\begin{center}
+
+This presentation can be found at: 
+
+\small
+\url{http://github.com/cs0rbagomba/cc_and_dod/cc_and_dod.pdf}
+
+\smallskip 
+or
+\smallskip
+
+\includegraphics[height=3.3cm]{qr_cc_and_dod.png}
+
+\smallskip
+
+Any questions?
+\end{center}
+
+
 \end{frame}
 
 %----------- slide --------------------------------------------------%
